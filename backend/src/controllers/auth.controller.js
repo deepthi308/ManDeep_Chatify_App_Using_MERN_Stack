@@ -49,9 +49,10 @@ export const signUp = async (req, res) => {
 
     // Once the user is created, generating the token
     if (newUser) {
-      generateToken(newUser._id, res);
-      //Saving the user to DB once the token is generated
+      //Saving the user to DB
       await newUser.save();
+      //Generating the token
+      generateToken(newUser._id, res);
 
       //Returning the newly created user data as a response
       res.status(201).json({
