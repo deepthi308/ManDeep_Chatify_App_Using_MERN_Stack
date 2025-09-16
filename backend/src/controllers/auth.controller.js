@@ -1,3 +1,5 @@
+import { sendWelcomeEmail } from "../emails/emailHandler.js";
+import { ENV } from "../lib/env.js";
 import { generateToken } from "../lib/utils.js";
 import User from "../models/user.model.js";
 import bcrypt from "bcryptjs";
@@ -50,7 +52,7 @@ export const signUp = async (req, res) => {
     // Once the user is created, generating the token
     if (newUser) {
       //Saving the user to DB
-      await newUser.save();
+      const savedUser = await newUser.save();
       //Generating the token
       generateToken(newUser._id, res);
 
@@ -63,6 +65,15 @@ export const signUp = async (req, res) => {
       });
 
       //Todo: Send a welcome email to the user
+      try {
+        await sendWelcomeEmail(
+          savedUser.email,
+          savedUser.fullName,
+          ENV.CLIENT_URL
+        );
+      } catch (error) {
+        console.error("Failed to send welcome email:", error);
+      }
     } else {
       res.status(400).json({
         message: "Invalid user data",
