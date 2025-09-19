@@ -10,7 +10,7 @@ import { arcjetProtection } from "../middleware/arcjet.middleware.js";
 
 const Router = express.Router();
 
-Router.use(arcjetProtection);
+// Router.use(arcjetProtection);
 
 Router.get("/test", (_, res) => {
   return res.status(200).json({
