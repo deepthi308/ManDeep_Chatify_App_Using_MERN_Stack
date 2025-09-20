@@ -5,7 +5,9 @@ import { toast } from "react-hot-toast";
 export const useAuthStore = create((set, get) => ({
   authUser: null,
   isCheckingAuth: true,
-  IsSigningUp: false,
+  isSigningUp: false,
+  isSigningIn: false,
+  // isSigningOut: false,
 
   checkAuth: async () => {
     try {
@@ -18,8 +20,20 @@ export const useAuthStore = create((set, get) => ({
       set({ isCheckingAuth: false });
     }
   },
+  signin: async (data) => {
+    set({ isSigningIn: true });
+    try {
+      const res = await axiosInstance.post("/auth/signin", data);
+      set({ authUser: res.data });
+      toast.success("Logged in successfully");
+    } catch (error) {
+      toast.error(error.response.data.message);
+    } finally {
+      set({ isSigningIn: false });
+    }
+  },
   signup: async (data) => {
-    set({ IsSigningUp: true });
+    set({ isSigningUp: true });
     try {
       const res = await axiosInstance.post("/auth/signup", data);
       set({ authUser: res.data });
@@ -27,7 +41,20 @@ export const useAuthStore = create((set, get) => ({
     } catch (error) {
       toast.error(error.response.data.message);
     } finally {
-      set({ IsSigningUp: false });
+      set({ isSigningUp: false });
+    }
+  },
+  signout: async () => {
+    set({ isSigningOut: true });
+    try {
+      await axiosInstance.post("/auth/signout");
+      set({ authUser: null });
+      toast.success("Logged out successfully");
+    } catch (error) {
+      toast.error("Error while logging out");
+      console.error(error.response.data.message);
+    } finally {
+      set({ isSigningOut: false });
     }
   },
 }));
