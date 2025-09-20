@@ -52,30 +52,47 @@ export const getMessagesByUserId = async (req, res) => {
 export const sendMessage = async (req, res) => {
   try {
     const { text, image } = req.body;
-    const senderId = req.user._id;
+    // console.log(text, image);
     const { id: receiverId } = req.params;
-
+    const senderId = req.user._id;
+    console.log("Testing");
+    if (!text && !image) {
+      return res.status(400).json({ message: "Text or image is required." });
+    }
+    if (senderId.equals(receiverId)) {
+      return res
+        .status(400)
+        .json({ message: "Cannot send messages to yourself." });
+    }
+    const receiverExists = await User.exists({ _id: receiverId });
+    if (!receiverExists) {
+      return res.status(404).json({ message: "Receiver not found." });
+    }
+    console.log("Testing");
     let imageUrl;
     if (image) {
-      const uploadResponse = cloudinary.uploader.upload(image);
-      imageUrl = (await uploadResponse).secure_url;
+      console.log("Testing");
+      // upload base64 image to cloudinary
+      const uploadResponse = await cloudinary.uploader.upload(image);
+      console.log(uploadResponse);
+      imageUrl = uploadResponse.secure_url;
     }
+
+    console.log("Image URL: ", imageUrl);
+
     const newMessage = new Message({
       senderId,
       receiverId,
       text,
       image: imageUrl,
     });
-    newMessage.save();
 
-    // Todo: Send message in real time if the receiver is  online - socket.io
+    await newMessage.save();
 
     res.status(201).json(newMessage);
   } catch (error) {
-    console.log(`Eerror in sendMessage controller: ${error}`);
-    res.json(500).json({
-      message: "Internal server error",
-    });
+    console.log("Error in sendMessage controller: ", error.message);
+    res.status(500).json({ error: "Internal server error" });
   }
 };
 
