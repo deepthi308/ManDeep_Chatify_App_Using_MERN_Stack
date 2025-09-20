@@ -101,7 +101,8 @@ export const signIn = async (req, res) => {
     }
     // Never tell the client which one is incorrect: password or email
 
-    const isPasswordCorrect = bcrypt.compare(password, user.password);
+    const isPasswordCorrect = await bcrypt.compare(password, user.password);
+    // console.log("isPasswordCorrect :", isPasswordCorrect);
     if (!isPasswordCorrect) {
       return res.status(400).json({
         message: "Invalid Credentials",
@@ -109,7 +110,7 @@ export const signIn = async (req, res) => {
     }
 
     await generateToken(user._id, res);
-    console.log("Testing");
+    // console.log("Testing");
     res.status(200).json({
       _id: user._id,
       fullName: user.fullName,

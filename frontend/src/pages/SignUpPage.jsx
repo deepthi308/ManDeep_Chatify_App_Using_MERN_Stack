@@ -11,7 +11,11 @@ import {
 import { Link } from "react-router";
 
 export default function SignUpPage() {
-  const [formData, setFormData] = useState({ fullName: "", email: "" });
+  const [formData, setFormData] = useState({
+    fullName: "",
+    email: "",
+    password: "",
+  });
   const { signup, isSigningUp } = useAuthStore();
 
   const handleSubmit = (e) => {
