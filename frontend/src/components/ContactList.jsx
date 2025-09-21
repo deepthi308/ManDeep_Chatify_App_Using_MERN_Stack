@@ -30,7 +30,7 @@ export default function ContactList() {
             className="bg-cyan-500/10 p-4 rounded-lg cursor-pointer hover:bg-cyan-500/20 transition-colors"
             onClick={() => setSelectedUser(contact)}
           >
-            {/* TODO: FIX THIS ONLINE STATUS AND MAKE IT WORK WITH SOCKET */}
+            {/* TODO: FIX THIS ONLINE STATUS AND MAKE IT WORK WITH SOCKET - Completed */}
             <div className="flex items-center gap-3">
               <div
                 className={`avatar ${
