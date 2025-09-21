@@ -65,7 +65,7 @@ export const signUp = async (req, res) => {
         profilePic: newUser.profilePic,
       });
 
-      //Todo: Send a welcome email to the user
+      //Todo: Send a welcome email to the user - Completed
       try {
         await sendWelcomeEmail(
           savedUser.email,
